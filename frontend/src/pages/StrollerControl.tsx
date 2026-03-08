@@ -4,6 +4,7 @@ import {
   disconnectArduino,
   listPorts,
   emergencyStop,
+  setStrollerSpeed,
 } from "../api/client";
 import { useStrollerSocket } from "../hooks/useStrollerSocket";
 
@@ -38,6 +39,15 @@ export default function StrollerControl() {
     setArduinoConnected(false);
   };
 
+  const handleSetSpeed = async () => {
+    sendSpeed(targetSpeed);
+    try {
+      await setStrollerSpeed(targetSpeed);
+    } catch {
+      // WebSocket already sent the command
+    }
+  };
+
   const handleStop = () => {
     sendStop();
     emergencyStop();
@@ -45,7 +55,8 @@ export default function StrollerControl() {
 
   return (
     <div className="page">
-      <h1>🎮 Stroller Control</h1>
+      <h1>Pacer Control</h1>
+      <p className="subtitle">Connect to BunBot and set your target pace</p>
 
       {/* Connection */}
       <section className="card">
@@ -56,6 +67,7 @@ export default function StrollerControl() {
               value={selectedPort}
               onChange={(e) => setSelectedPort(e.target.value)}
             >
+              {ports.length === 0 && <option>No ports found</option>}
               {ports.map((p) => (
                 <option key={p} value={p}>
                   {p}
@@ -77,14 +89,15 @@ export default function StrollerControl() {
 
       {/* Speed Control */}
       <section className="card">
-        <h2>Speed Control</h2>
+        <h2>Pace Control</h2>
         <div className="speed-control">
-          <label>
-            Target Speed: <strong>{targetSpeed.toFixed(1)} m/s</strong>
-            <span className="pace-hint">
-              ({((1000 / targetSpeed) / 60).toFixed(1)} min/km)
-            </span>
-          </label>
+          <div className="speed-display">
+            {((1000 / targetSpeed) / 60).toFixed(1)}
+            <span className="speed-unit"> min/km</span>
+          </div>
+          <span className="pace-hint">
+            {targetSpeed.toFixed(1)} m/s
+          </span>
           <input
             type="range"
             min="0"
@@ -93,10 +106,12 @@ export default function StrollerControl() {
             value={targetSpeed}
             onChange={(e) => setTargetSpeed(Number(e.target.value))}
           />
-          <div className="form-row">
-            <button onClick={() => sendSpeed(targetSpeed)}>Set Speed</button>
-            <button className="danger" onClick={handleStop}>
-              🛑 Emergency Stop
+          <div className="form-row" style={{ justifyContent: "center", marginTop: "0.75rem" }}>
+            <button onClick={handleSetSpeed} disabled={!arduinoConnected}>
+              Set Speed
+            </button>
+            <button className="danger" onClick={handleStop} disabled={!arduinoConnected}>
+              Emergency Stop
             </button>
           </div>
         </div>
@@ -104,28 +119,35 @@ export default function StrollerControl() {
 
       {/* Live Data */}
       <section className="card">
-        <h2>Live Data {wsConnected ? "🟢" : "🔴"}</h2>
+        <h2>
+          Live Telemetry{" "}
+          <span className={`status ${wsConnected ? "connected" : "disconnected"}`}>
+            {wsConnected ? "Live" : "Offline"}
+          </span>
+        </h2>
         {data ? (
           <div className="stats-grid">
             <div className="stat">
               <span className="stat-value">{data.speed.toFixed(2)}</span>
-              <span className="stat-label">m/s</span>
+              <span className="stat-label">Speed m/s</span>
             </div>
             <div className="stat">
               <span className="stat-value">{(data.distance / 1000).toFixed(2)}</span>
-              <span className="stat-label">km</span>
+              <span className="stat-label">Distance km</span>
             </div>
             <div className="stat">
               <span className="stat-value">{data.batteryLevel}%</span>
               <span className="stat-label">Battery</span>
             </div>
             <div className="stat">
-              <span className="stat-value">{data.motorStatus}</span>
+              <span className="stat-value" style={{ fontSize: "1.2rem" }}>{data.motorStatus}</span>
               <span className="stat-label">Motor</span>
             </div>
           </div>
         ) : (
-          <p>No data yet — connect Arduino and start moving.</p>
+          <div className="empty-state">
+            <p>Connect to BunBot to see live pace and distance data.</p>
+          </div>
         )}
       </section>
     </div>

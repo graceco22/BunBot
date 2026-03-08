@@ -44,6 +44,11 @@ export class ArduinoService extends EventEmitter {
     portPath?: string,
     baudRate?: number
   ): Promise<{ success: boolean; error?: string }> {
+    // Clean up any stale connection first
+    this.disconnect();
+    // Small delay to let the OS release the port
+    await new Promise((r) => setTimeout(r, 300));
+
     const path = portPath || process.env.ARDUINO_PORT || "/dev/tty.usbmodem1101";
     const baud = baudRate || Number(process.env.ARDUINO_BAUD_RATE) || 9600;
 
@@ -51,6 +56,11 @@ export class ArduinoService extends EventEmitter {
       try {
         this.port = new SerialPort({ path, baudRate: baud, autoOpen: false });
         this.parser = this.port.pipe(new ReadlineParser({ delimiter: "\n" }));
+
+        this.port.on("error", (err) => {
+          console.error("Serial port error:", err.message);
+          this.connected = false;
+        });
 
         this.port.open((err) => {
           if (err) {
@@ -60,6 +70,7 @@ export class ArduinoService extends EventEmitter {
           }
           this.connected = true;
           this.listenForData();
+          console.log(`Arduino connected on ${path} @ ${baud}`);
           resolve({ success: true });
         });
 
@@ -74,9 +85,15 @@ export class ArduinoService extends EventEmitter {
   }
 
   disconnect(): void {
-    if (this.port?.isOpen) {
-      this.port.close();
+    try {
+      if (this.port?.isOpen) {
+        this.port.close();
+      }
+    } catch {
+      // ignore close errors on stale ports
     }
+    this.port = null;
+    this.parser = null;
     this.connected = false;
   }
 
@@ -107,9 +124,16 @@ export class ArduinoService extends EventEmitter {
   // ---- private ----
 
   private sendCommand(cmd: string, value: number): void {
-    if (!this.port?.isOpen) return;
+    if (!this.port?.isOpen) {
+      console.warn(`sendCommand(${cmd}) ignored — port not open`);
+      return;
+    }
     const msg = JSON.stringify({ cmd, value }) + "\n";
-    this.port.write(msg);
+    this.port.write(msg, (err) => {
+      if (err) {
+        console.error(`Serial write error: ${err.message}`);
+      }
+    });
   }
 
   private listenForData(): void {

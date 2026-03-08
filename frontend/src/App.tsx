@@ -3,8 +3,8 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import StrollerControl from "./pages/StrollerControl";
 import RunSession from "./pages/RunSession";
+import Insights from "./pages/Insights";
 import TrainingPlans from "./pages/TrainingPlans";
-import RunHistory from "./pages/RunHistory";
 import "./App.css";
 
 function App() {
@@ -14,10 +14,10 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/stroller" element={<StrollerControl />} />
+          <Route path="/pacer" element={<StrollerControl />} />
           <Route path="/run" element={<RunSession />} />
+          <Route path="/insights" element={<Insights />} />
           <Route path="/training" element={<TrainingPlans />} />
-          <Route path="/history" element={<RunHistory />} />
         </Routes>
       </main>
     </BrowserRouter>
