@@ -40,6 +40,14 @@ export default function StrollerControl() {
   };
 
   const handleSetSpeed = async () => {
+
+    console.log("test");
+
+    fetch("http://127.0.0.1:8000/move_motor")
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.error(err));
+
     sendSpeed(targetSpeed);
     try {
       await setStrollerSpeed(targetSpeed);
@@ -107,8 +115,8 @@ export default function StrollerControl() {
             onChange={(e) => setTargetSpeed(Number(e.target.value))}
           />
           <div className="form-row" style={{ justifyContent: "center", marginTop: "0.75rem" }}>
-            <button onClick={handleSetSpeed} disabled={!arduinoConnected}>
-              Set Speed
+            <button onClick={handleSetSpeed}>
+              Set Speed Test
             </button>
             <button className="danger" onClick={handleStop} disabled={!arduinoConnected}>
               Emergency Stop
