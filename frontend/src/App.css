@@ -1,0 +1,204 @@
+/* ---- Layout ---- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #0f1117;
+  color: #e4e4e7;
+  min-height: 100vh;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.page h1 {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+.subtitle {
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+/* ---- Navbar ---- */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2rem;
+  background: #1a1b23;
+  border-bottom: 1px solid #2a2b35;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav-brand { font-size: 1.25rem; font-weight: 700; }
+.nav-links { display: flex; gap: 1.25rem; }
+.nav-links a {
+  color: #888;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a.active, .nav-links a:hover { color: #60a5fa; }
+
+/* ---- Cards ---- */
+.card {
+  background: #1a1b23;
+  border: 1px solid #2a2b35;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: #3a3b45; }
+.card h2 { font-size: 1.25rem; margin-bottom: 0.75rem; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+.card-grid .card {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.card-grid .card p { color: #888; font-size: 0.9rem; margin-top: 0.5rem; }
+
+.clickable { cursor: pointer; }
+.selected { border-color: #60a5fa !important; }
+
+/* ---- Forms ---- */
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.form-grid label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem; }
+
+select, input[type="range"] {
+  background: #0f1117;
+  color: #e4e4e7;
+  border: 1px solid #2a2b35;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #60a5fa;
+}
+
+/* ---- Buttons ---- */
+button {
+  background: #60a5fa;
+  color: #0f1117;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+button:hover { background: #93c5fd; }
+button.secondary { background: #2a2b35; color: #e4e4e7; }
+button.secondary:hover { background: #3a3b45; }
+button.danger { background: #ef4444; color: #fff; }
+button.danger:hover { background: #f87171; }
+button.small { padding: 0.3rem 0.75rem; font-size: 0.8rem; }
+button.link { background: none; color: #60a5fa; padding: 0; font-weight: 500; }
+button.link:hover { text-decoration: underline; }
+
+/* ---- Stats ---- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.stat { text-align: center; }
+.stat-value { display: block; font-size: 1.75rem; font-weight: 700; color: #60a5fa; }
+.stat-label { font-size: 0.8rem; color: #888; }
+
+/* ---- Speed control ---- */
+.speed-control label { display: block; margin-bottom: 0.5rem; }
+.pace-hint { color: #888; margin-left: 0.5rem; font-size: 0.85rem; }
+
+/* ---- Status ---- */
+.status { padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.85rem; }
+.status.connected { background: #065f46; color: #34d399; }
+.error { color: #f87171; margin-top: 0.5rem; }
+
+/* ---- Tables ---- */
+.splits-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+}
+.splits-table th, .splits-table td {
+  padding: 0.5rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #2a2b35;
+}
+.splits-table th { color: #888; font-weight: 500; }
+
+/* ---- Training plan ---- */
+.plan-list {
+  list-style: none;
+}
+.plan-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #2a2b35;
+}
+.meta { color: #888; font-size: 0.85rem; }
+.plan-header { display: flex; justify-content: space-between; align-items: center; }
+
+.week-block {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border: 1px solid #2a2b35;
+  border-radius: 8px;
+}
+.week-block h3 { margin-bottom: 0.75rem; }
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+.day-card {
+  background: #0f1117;
+  border-left: 3px solid;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+}
+.day-card strong { display: block; margin-bottom: 0.25rem; }
+.day-type { font-weight: 600; text-transform: uppercase; font-size: 0.7rem; }
+.day-card p { color: #aaa; margin: 0.35rem 0; }
+
+/* ---- Session row ---- */
+.session-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---- Active run ---- */
+.active-run { border-color: #22c55e; }
